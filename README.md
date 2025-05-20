@@ -106,14 +106,6 @@ printify-v1/
 - [ ] Create admin panel for service providers
 - [ ] Implement payment integration
 
-## Contributing
-
-We welcome contributions to Printify! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 Project Maintainer: Ben - [fallenben289@github.com](mailto:fallenben289@github.com)
