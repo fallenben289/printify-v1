@@ -1,113 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Rural print and send service for documents" />
   <title>📄 Print & Send Service (Rural Edition)</title>
+  <link rel="stylesheet" href="css/styles.css">
   <style>
+    /* Base styles - in production, move to external CSS file */
+    :root {
+      --primary-color: #28a745;
+      --primary-hover: #218838;
+      --text-color: #333;
+      --bg-color: #f1f1f1;
+      --card-bg: white;
+      --border-radius: 8px;
+    }
+    
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f1f1f1;
+      background-color: var(--bg-color);
       padding: 20px;
+      color: var(--text-color);
+      line-height: 1.6;
     }
-
+    
     .container {
       max-width: 480px;
-      background: white;
+      background: var(--card-bg);
       margin: auto;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.08);
     }
-
+    
     h1 {
       text-align: center;
-      color: #333;
+      color: var(--text-color);
       font-size: 22px;
+      margin-bottom: 20px;
     }
-
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
     label {
       display: block;
       margin-top: 15px;
       font-weight: bold;
     }
-
+    
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+    }
+    
     input[type="checkbox"] {
       margin-right: 8px;
     }
-
+    
     textarea, input[type="file"] {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
-
+    
+    .preview-container {
+      margin-top: 15px;
+    }
+    
     #previewImage {
       max-width: 100%;
       margin-top: 10px;
+      display: none;
     }
-
-    button {
+    
+    .btn {
       margin-top: 20px;
       width: 100%;
       padding: 12px;
       font-size: 16px;
       border: none;
-      background-color: #28a745;
+      background-color: var(--primary-color);
       color: white;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
-
-    button:hover {
-      background-color: #218838;
+    
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .btn:focus {
+      outline: 2px solid #0a58ca;
+      outline-offset: 2px;
+    }
+    
+    /* Accessibility improvements */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+    
+    /* Simple loading indicator */
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 500px) {
+      .container {
+        padding: 15px;
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+<main class="container">
+  <h1><span aria-hidden="true">📤</span> <span>Submit to Print</span></h1>
+  <form id="printForm">
+    <fieldset>
+      <legend>Document Sections</legend>
+      
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" class="section-check" id="section-a" value="Section A" checked /> 
+          <span>Sertifikat</span>
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" class="section-check" id="section-b" value="Section B" checked /> 
+          <span>Nota Pembelian</span>
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" class="section-check" id="section-c" value="Section C" /> 
+          <span>Resit Bayaran</span>
+        </label>
+      </div>
+    </fieldset>
+    
+    <div class="form-group">
+      <label for="note">Nota Tambahan:</label>
+      <textarea id="note" placeholder="Tulis nama, tarikh, atau catatan lain..." rows="3" aria-describedby="note-help"></textarea>
+      <small id="note-help" class="text-muted">Provide any additional information needed for your print job</small>
+    </div>
+    
+    <div class="form-group">
+      <label for="imageUpload">Gambar Tambahan (jika ada):</label>
+      <input type="file" id="imageUpload" accept="image/*" aria-describedby="image-help">
+      <small id="image-help" class="text-muted">Supported formats: JPG, PNG, GIF (max 5MB)</small>
+    </div>
+    
+    <div class="preview-container">
+      <img id="previewImage" src="" alt="Image preview" aria-live="polite" />
+    </div>
+    
+    <button type="submit" id="submitBtn" class="btn">
+      <span aria-hidden="true">📱</span> Hantar & WhatsApp
+    </button>
+    
+    <div class="loading" id="loadingIndicator">
+      Processing your request...
+    </div>
+  </form>
+</main>
 
-<div class="container">
-  <h1>📤 Submit to Print</h1>
-
-  <label><input type="checkbox" class="section-check" value="Section A" checked /> Sertifikat</label>
-  <label><input type="checkbox" class="section-check" value="Section B" checked /> Nota Pembelian</label>
-  <label><input type="checkbox" class="section-check" value="Section C" /> Resit Bayaran</label>
-
-  <label for="note">Nota Tambahan:</label>
-  <textarea id="note" placeholder="Tulis nama, tarikh, atau catatan lain..."></textarea>
-
-  <label for="imageUpload">Gambar Tambahan (jika ada):</label>
-  <input type="file" id="imageUpload" accept="image/*">
-  <img id="previewImage" src="" alt="Preview" />
-
-  <button id="submitBtn">Hantar & WhatsApp</button>
-</div>
-
-<script>
-document.getElementById('imageUpload').addEventListener('change', function(e) {
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    document.getElementById('previewImage').src = event.target.result;
-  };
-  reader.readAsDataURL(e.target.files[0]);
-});
-
-document.getElementById('submitBtn').addEventListener('click', function () {
-  const selected = [...document.querySelectorAll('.section-check:checked')]
-    .map(cb => cb.value).join(', ');
-  const note = document.getElementById('note').value;
-
-  const message = `📄 Permintaan Cetakan Diterima:
-✅ Bahagian: ${selected}
-📝 Nota: ${note || "Tiada nota"}
-📤 Akan diproses dan dimaklumkan kemudian.`;
-
-  const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
-  window.open(waLink, '_blank');
-});
-</script>
-
+<script src="js/script.js"></script>
 </body>
 </html>
