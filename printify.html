@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📄 Print & Send Service (Rural Edition)</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f1f1;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 480px;
+      background: white;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    textarea, input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #previewImage {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📤 Submit to Print</h1>
+
+  <label><input type="checkbox" class="section-check" value="Section A" checked /> Sertifikat</label>
+  <label><input type="checkbox" class="section-check" value="Section B" checked /> Nota Pembelian</label>
+  <label><input type="checkbox" class="section-check" value="Section C" /> Resit Bayaran</label>
+
+  <label for="note">Nota Tambahan:</label>
+  <textarea id="note" placeholder="Tulis nama, tarikh, atau catatan lain..."></textarea>
+
+  <label for="imageUpload">Gambar Tambahan (jika ada):</label>
+  <input type="file" id="imageUpload" accept="image/*">
+  <img id="previewImage" src="" alt="Preview" />
+
+  <button id="submitBtn">Hantar & WhatsApp</button>
+</div>
+
+<script>
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    document.getElementById('previewImage').src = event.target.result;
+  };
+  reader.readAsDataURL(e.target.files[0]);
+});
+
+document.getElementById('submitBtn').addEventListener('click', function () {
+  const selected = [...document.querySelectorAll('.section-check:checked')]
+    .map(cb => cb.value).join(', ');
+  const note = document.getElementById('note').value;
+
+  const message = `📄 Permintaan Cetakan Diterima:
+✅ Bahagian: ${selected}
+📝 Nota: ${note || "Tiada nota"}
+📤 Akan diproses dan dimaklumkan kemudian.`;
+
+  const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(waLink, '_blank');
+});
+</script>
+
+</body>
+</html>
